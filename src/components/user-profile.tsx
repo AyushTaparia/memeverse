@@ -166,13 +166,13 @@ const UserProfile = () => {
         <TabsContent value="liked" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Memes You've Liked</CardTitle>
+              <CardTitle className="text-lg">Memes You&apos;ve Liked</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center py-12">
                 <ThumbsUp className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-30" />
                 <p className="text-muted-foreground">
-                  You've liked{" "}
+                  You&apos;ve liked{" "}
                   <span className="font-bold">
                     {user.likedMemes?.length || 0}
                   </span>{" "}
@@ -186,7 +186,7 @@ const UserProfile = () => {
         <TabsContent value="uploaded" className="mt-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg">Memes You've Uploaded</CardTitle>
+              <CardTitle className="text-lg">Memes You&apos;ve Uploaded</CardTitle>
               <Button size="sm" variant="outline" asChild>
                 <Link href="/upload">
                   <Upload className="w-4 h-4 mr-2" />
@@ -198,7 +198,7 @@ const UserProfile = () => {
               <div className="text-center py-12">
                 <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-30" />
                 <p className="text-muted-foreground">
-                  You've uploaded{" "}
+                  You&apos;ve uploaded{" "}
                   <span className="font-bold">
                     {user.uploadedMemes?.length || 0}
                   </span>{" "}

@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { Github, Twitter, Instagram } from "lucide-react";
-
 const Footer = () => {
   return (
     <footer className="w-full border-t bg-background">
