@@ -1,10 +1,8 @@
 "use client";
 
 import type React from "react";
-
 import { useEffect } from "react";
-
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { MemeGrid } from "@/components/meme-grid";
@@ -71,32 +69,34 @@ export default function ExploreContent({
     router.replace(`${pathname}?${params.toString()}`);
   }, [searchTerm, category, pathname, router, searchParams]);
 
-  // Debounced search function
-  const debouncedSearch = useCallback(
-    debounce((query: string) => {
+  // Memoize the debounced search function
+  const debouncedSearch = useMemo(() => {
+    return debounce((query: string) => {
       setSearchTerm(query);
       setPage(1);
-    }, 500),
-    []
-  );
+    }, 500);
+  }, []);
 
   // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    debouncedSearch(query);
-  };
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const query = e.target.value;
+      debouncedSearch(query);
+    },
+    [debouncedSearch]
+  );
 
   // Handle category change
-  const handleCategoryChange = (newCategory: MemeCategory) => {
+  const handleCategoryChange = useCallback((newCategory: MemeCategory) => {
     setCategory(newCategory);
     setSearchTerm("");
     setPage(1);
-  };
+  }, []);
 
   // Handle load more
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     setPage((prevPage) => prevPage + 1);
-  };
+  }, []);
 
   // Calculate pagination
   const paginatedMemes = memes.slice(0, page * itemsPerPage);

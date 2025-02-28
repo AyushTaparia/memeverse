@@ -14,7 +14,7 @@ const UserProfile = () => {
   const [editing, setEditing] = useState(false);
   const [username, setUsername] = useState(user?.username || "");
   const [bio, setBio] = useState(user?.bio || "");
-  const [avatar, setAvatar] = useState(user?.avatar || "");
+  const [avatar] = useState(user?.avatar || "");
   const [error, setError] = useState("");
 
   const handleSave = () => {

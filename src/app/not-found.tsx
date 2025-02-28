@@ -28,7 +28,7 @@ export default function NotFound() {
 
       <h1 className="text-4xl font-bold mb-4">Oops! Meme not found</h1>
       <p className="text-xl text-muted-foreground mb-8 max-w-md">
-        The page you're looking for has disappeared faster than a viral meme.
+        The page you&apos;re looking for has disappeared faster than a viral meme.
       </p>
 
       <div className="flex flex-col sm:flex-row gap-4">

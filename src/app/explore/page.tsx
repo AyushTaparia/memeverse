@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import ExploreContent from "@/components/explore-content";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MemeCategory } from "../../../types/meme";
 
 export const metadata = {
   title: "Explore Memes - MemeVerse",
@@ -25,7 +26,10 @@ export default function ExplorePage({
       <h1 className="text-3xl font-bold mb-8">Explore Memes</h1>
 
       <Suspense fallback={<ExploreLoadingSkeleton />}>
-        <ExploreContent initialSearch={search} initialCategory={category} />
+        <ExploreContent
+          initialSearch={search}
+          initialCategory={category as MemeCategory}
+        />
       </Suspense>
     </div>
   );

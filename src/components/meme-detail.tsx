@@ -34,7 +34,7 @@ export default function MemeDetail({ id }: MemeDetailProps) {
       <div className="max-w-4xl mx-auto text-center py-20">
         <h1 className="text-2xl font-bold mb-4">Meme not found</h1>
         <p className="mb-8">
-          The meme you're looking for doesn't exist or has been removed.
+          The meme you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         <Button onClick={() => router.push("/explore")}>
           Explore Other Memes

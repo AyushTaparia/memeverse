@@ -1,15 +1,6 @@
 import { IComment, IMeme } from "../../types/meme";
 import { imgflipApi } from "./api-client";
 
-// Imgflip API endpoints
-const IMGFLIP_API_BASE = "https://api.imgflip.com";
-const IMGFLIP_GET_MEMES = `${IMGFLIP_API_BASE}/get_memes`;
-
-// For demo purposes only - in a real app, these would be environment variables
-// and the authentication would happen server-side
-const DEMO_USERNAME = "demo_user";
-const DEMO_PASSWORD = "demo_password";
-
 // Fetch meme templates from Imgflip API
 export const fetchMemeTemplates = async () => {
   try {
@@ -21,6 +12,7 @@ export const fetchMemeTemplates = async () => {
 };
 
 // Transform API data to our Meme format
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 const transformMemeData = (memes: any[]): IMeme[] => {
   const categories = ["trending", "new", "classic", "random"];
 

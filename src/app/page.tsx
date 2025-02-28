@@ -119,7 +119,7 @@ export default function HomePage() {
                 Trending Memes
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Check out what's making everyone laugh right now.
+                Check out what&apos;s making everyone laugh right now.
               </p>
             </div>
           </div>

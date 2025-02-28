@@ -50,6 +50,7 @@ apiClient.interceptors.request.use((config) => {
 });
 
 // Error handler helper
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleApiError = (error: AxiosError<ImgflipResponse<any>>) => {
   if (error.response) {
     throw new Error(error.response.data.error_message || "API request failed");
@@ -67,6 +68,7 @@ export const imgflipApi = {
       >("/get_memes");
       return response.data.data.memes;
     } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       handleApiError(error as AxiosError<ImgflipResponse<any>>);
     }
   },
@@ -95,6 +97,7 @@ export const imgflipApi = {
       );
       return response.data.data;
     } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       handleApiError(error as AxiosError<ImgflipResponse<any>>);
     }
   },
@@ -122,6 +125,7 @@ export const imgflipApi = {
       );
       return response.data.data;
     } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       handleApiError(error as AxiosError<ImgflipResponse<any>>);
     }
   },
@@ -134,6 +138,7 @@ export const imgflipApi = {
       >("/search_memes", params);
       return response.data.data.memes;
     } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       handleApiError(error as AxiosError<ImgflipResponse<any>>);
     }
   },
@@ -146,6 +151,7 @@ export const imgflipApi = {
       >("/get_meme", { template_id });
       return response.data.data.meme;
     } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       handleApiError(error as AxiosError<ImgflipResponse<any>>);
     }
   },
@@ -165,6 +171,7 @@ export const imgflipApi = {
       );
       return response.data.data;
     } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       handleApiError(error as AxiosError<ImgflipResponse<any>>);
     }
   },
@@ -178,6 +185,7 @@ export const imgflipApi = {
       );
       return response.data.data;
     } catch (error) {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
       handleApiError(error as AxiosError<ImgflipResponse<any>>);
     }
   },
