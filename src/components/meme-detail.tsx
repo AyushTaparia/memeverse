@@ -1,62 +1,68 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { Heart, Share2, MessageCircle, Send, ChevronLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { useMeme } from "@/context/meme-context"
-import { useUser } from "@/context/user-context"
-import { formatRelativeTime } from "@/lib/utils"
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Heart, Share2, MessageCircle, Send, ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useMeme } from "@/context/meme-context";
+import { useUser } from "@/context/user-context";
+import { formatRelativeTime } from "@/lib/utils";
 
 interface MemeDetailProps {
-  id: string
+  id: string;
 }
 
 export default function MemeDetail({ id }: MemeDetailProps) {
-  const router = useRouter()
-  const { getMemeById, addComment, likeMeme } = useMeme()
-  const { user, likeMeme: userLikeMeme, unlikeMeme, isMemeLiked } = useUser()
+  const router = useRouter();
+  const { getMemeById, addComment, likeMeme } = useMeme();
+  const { user, likeMeme: userLikeMeme, unlikeMeme, isMemeLiked } = useUser();
 
-  const meme = getMemeById(id)
-  const [commentText, setCommentText] = useState("")
-  const [isLiked, setIsLiked] = useState(meme ? isMemeLiked(meme.id) : false)
-  const [likeCount, setLikeCount] = useState(meme ? meme.likes : 0)
-  const [isLikeAnimating, setIsLikeAnimating] = useState(false)
+  const meme = getMemeById(id);
+  const [commentText, setCommentText] = useState("");
+  const [isLiked, setIsLiked] = useState(meme ? isMemeLiked(meme.id) : false);
+  const [likeCount, setLikeCount] = useState(meme ? meme.likes : 0);
+  const [isLikeAnimating, setIsLikeAnimating] = useState(false);
 
   if (!meme) {
     return (
       <div className="max-w-4xl mx-auto text-center py-20">
         <h1 className="text-2xl font-bold mb-4">Meme not found</h1>
-        <p className="mb-8">The meme you're looking for doesn't exist or has been removed.</p>
-        <Button onClick={() => router.push("/explore")}>Explore Other Memes</Button>
+        <p className="mb-8">
+          The meme you're looking for doesn't exist or has been removed.
+        </p>
+        <Button onClick={() => router.push("/explore")}>
+          Explore Other Memes
+        </Button>
       </div>
-    )
+    );
   }
 
   const handleLike = () => {
-    if (!user) return
+    if (!user) return;
 
     if (isLiked) {
-      setLikeCount((prev) => prev - 1)
-      unlikeMeme(meme.id)
+      setLikeCount((prev) => prev - 1);
+      unlikeMeme(meme.id);
     } else {
-      setLikeCount((prev) => prev + 1)
-      likeMeme(meme.id)
-      userLikeMeme(meme.id)
-      setIsLikeAnimating(true)
-      setTimeout(() => setIsLikeAnimating(false), 500)
+      setLikeCount((prev) => prev + 1);
+      likeMeme(meme.id);
+      userLikeMeme(meme.id);
+      setIsLikeAnimating(true);
+      setTimeout(() => setIsLikeAnimating(false), 500);
     }
 
-    setIsLiked(!isLiked)
-  }
+    setIsLiked(!isLiked);
+  };
 
-  const shareLink = `${typeof window !== "undefined" ? window.location.origin : ""}/meme/${meme.id}`
+  const shareLink = `${
+    typeof window !== "undefined" ? window.location.origin : ""
+  }/meme/${meme.id}`;
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -65,40 +71,45 @@ export default function MemeDetail({ id }: MemeDetailProps) {
           title: meme.name,
           text: `Check out this meme: ${meme.name}`,
           url: shareLink,
-        })
+        });
       } catch (error) {
-        console.error("Error sharing:", error)
+        console.error("Error sharing:", error);
       }
     } else {
       // Fallback - copy to clipboard
-      navigator.clipboard.writeText(shareLink)
-      alert("Link copied to clipboard!")
+      navigator.clipboard.writeText(shareLink);
+      alert("Link copied to clipboard!");
     }
-  }
+  };
 
   const handleSubmitComment = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!commentText.trim() || !user) return
+    if (!commentText.trim() || !user) return;
 
     addComment(meme.id, {
       text: commentText,
       username: user.username,
-    })
+    });
 
-    setCommentText("")
-  }
+    setCommentText("");
+  };
 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <Button variant="ghost" className="mb-4 p-0" onClick={() => router.back()}>
+        <Button
+          variant="ghost"
+          className="mb-4 p-0"
+          onClick={() => router.back()}
+        >
           <ChevronLeft className="mr-1 h-4 w-4" />
           Back
         </Button>
         <h1 className="text-2xl font-bold mb-2">{meme.name}</h1>
         <p className="text-muted-foreground">
-          Posted {formatRelativeTime(meme.createdAt)} by {meme.creator || "Anonymous"}
+          Posted {formatRelativeTime(meme.createdAt)} by{" "}
+          {meme.creator || "Anonymous"}
         </p>
       </div>
 
@@ -116,7 +127,9 @@ export default function MemeDetail({ id }: MemeDetailProps) {
       <div className="flex items-center gap-4 mb-8">
         <Button
           variant="outline"
-          className={`flex items-center gap-2 ${isLikeAnimating ? "like-button-animation" : ""} ${isLiked ? "text-red-500 border-red-500" : ""}`}
+          className={`flex items-center gap-2 ${
+            isLikeAnimating ? "like-button-animation" : ""
+          } ${isLiked ? "text-red-500 border-red-500" : ""}`}
           onClick={handleLike}
         >
           <Heart className={`h-5 w-5 ${isLiked ? "fill-red-500" : ""}`} />
@@ -126,13 +139,22 @@ export default function MemeDetail({ id }: MemeDetailProps) {
         <Button
           variant="outline"
           className="flex items-center gap-2"
-          onClick={() => document.getElementById("comments-section")?.scrollIntoView({ behavior: "smooth" })}
+          onClick={() =>
+            document
+              .getElementById("comments-section")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
         >
           <MessageCircle className="h-5 w-5" />
-          {meme.comments.length} {meme.comments.length === 1 ? "Comment" : "Comments"}
+          {meme.comments.length}{" "}
+          {meme.comments.length === 1 ? "Comment" : "Comments"}
         </Button>
 
-        <Button variant="outline" className="flex items-center gap-2" onClick={handleShare}>
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          onClick={handleShare}
+        >
           <Share2 className="h-5 w-5" />
           Share
         </Button>
@@ -169,16 +191,22 @@ export default function MemeDetail({ id }: MemeDetailProps) {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-semibold">{comment.username}</span>
-                      <span className="text-sm text-muted-foreground">{formatRelativeTime(comment.createdAt)}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {formatRelativeTime(comment.createdAt)}
+                      </span>
                     </div>
-                    <div className="p-3 rounded-lg bg-muted">{comment.text}</div>
+                    <div className="p-3 rounded-lg bg-muted">
+                      {comment.text}
+                    </div>
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
         ) : (
-          <p className="text-muted-foreground mb-8">No comments yet. Be the first to comment!</p>
+          <p className="text-muted-foreground mb-8">
+            No comments yet. Be the first to comment!
+          </p>
         )}
 
         {user ? (
@@ -200,7 +228,11 @@ export default function MemeDetail({ id }: MemeDetailProps) {
                 className="mb-2 resize-none"
                 rows={3}
               />
-              <Button type="submit" disabled={!commentText.trim()} className="flex items-center gap-1">
+              <Button
+                type="submit"
+                disabled={!commentText.trim()}
+                className="flex items-center gap-1"
+              >
                 <Send className="h-4 w-4" />
                 Post Comment
               </Button>
@@ -216,6 +248,5 @@ export default function MemeDetail({ id }: MemeDetailProps) {
         )}
       </div>
     </div>
-  )
+  );
 }
-

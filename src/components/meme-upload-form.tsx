@@ -1,131 +1,138 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef } from "react"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
-import { Upload, X, UploadCloud, ImageIcon, Sparkles, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { generateAICaption, uploadMeme } from "@/lib/api"
-import { useMeme } from "@/context/meme-context"
-import { useUser } from "@/context/user-context"
+import { useState, useRef } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Upload,
+  X,
+  UploadCloud,
+  ImageIcon,
+  Sparkles,
+  Loader2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { generateAICaption, uploadMeme } from "@/lib/api";
+import { useMeme } from "@/context/meme-context";
+import { useUser } from "@/context/user-context";
 
 export default function MemeUploadForm() {
-  const router = useRouter()
-  const { addMeme } = useMeme()
-  const { user, addUploadedMeme } = useUser()
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter();
+  const { addMeme } = useMeme();
+  const { user, addUploadedMeme } = useUser();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [title, setTitle] = useState("")
-  const [caption, setCaption] = useState("")
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState("")
-  const [generatingCaption, setGeneratingCaption] = useState(false)
-  const [uploading, setUploading] = useState(false)
-  const [error, setError] = useState("")
+  const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [generatingCaption, setGeneratingCaption] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     // Check if file is an image
     if (!file.type.startsWith("image/")) {
-      setError("Please select an image file (PNG, JPG, GIF)")
-      return
+      setError("Please select an image file (PNG, JPG, GIF)");
+      return;
     }
 
     // Check file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
-      setError("File size should be less than 5MB")
-      return
+      setError("File size should be less than 5MB");
+      return;
     }
 
-    setError("")
-    setSelectedFile(file)
+    setError("");
+    setSelectedFile(file);
 
     // Create a preview URL
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = () => {
-      setPreviewUrl(reader.result as string)
-    }
-    reader.readAsDataURL(file)
-  }
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-  }
+    e.preventDefault();
+  };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const file = e.dataTransfer.files?.[0]
-    if (!file) return
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
 
     // Check if file is an image
     if (!file.type.startsWith("image/")) {
-      setError("Please select an image file (PNG, JPG, GIF)")
-      return
+      setError("Please select an image file (PNG, JPG, GIF)");
+      return;
     }
 
     // Check file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
-      setError("File size should be less than 5MB")
-      return
+      setError("File size should be less than 5MB");
+      return;
     }
 
-    setError("")
-    setSelectedFile(file)
+    setError("");
+    setSelectedFile(file);
 
     // Create a preview URL
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = () => {
-      setPreviewUrl(reader.result as string)
-    }
-    reader.readAsDataURL(file)
-  }
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleGenerateCaption = async () => {
-    if (!selectedFile) return
+    if (!selectedFile) return;
 
-    setGeneratingCaption(true)
+    setGeneratingCaption(true);
     try {
-      const aiCaption = await generateAICaption(selectedFile.name)
-      setCaption(aiCaption)
+      const aiCaption = await generateAICaption(selectedFile.name);
+      setCaption(aiCaption);
     } catch (error) {
-      console.error("Error generating caption:", error)
-      setError("Failed to generate AI caption. Please try again.")
+      console.error("Error generating caption:", error);
+      setError("Failed to generate AI caption. Please try again.");
     } finally {
-      setGeneratingCaption(false)
+      setGeneratingCaption(false);
     }
-  }
+  };
 
   const handleRemoveFile = () => {
-    setSelectedFile(null)
-    setPreviewUrl("")
+    setSelectedFile(null);
+    setPreviewUrl("");
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""
+      fileInputRef.current.value = "";
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!selectedFile || !title) {
-      setError("Please provide a title and select an image")
-      return
+      setError("Please provide a title and select an image");
+      return;
     }
 
     if (!user) {
-      setError("You need to be logged in to upload memes")
-      return
+      setError("You need to be logged in to upload memes");
+      return;
     }
 
-    setUploading(true)
+    setUploading(true);
     try {
       // In a real app, we would upload the file to a server/storage
       // For this demo, we'll just use the file URL directly
@@ -135,20 +142,20 @@ export default function MemeUploadForm() {
         url: previewUrl, // In a real app, this would be the URL from the server
         caption: caption,
         creator: user.username,
-      })
+      });
 
-      addMeme(newMeme)
-      addUploadedMeme(newMeme.id)
+      addMeme(newMeme);
+      addUploadedMeme(newMeme.id);
 
       // Navigate to the new meme
-      router.push(`/meme/${newMeme.id}`)
+      router.push(`/meme/${newMeme.id}`);
     } catch (error) {
-      console.error("Error uploading meme:", error)
-      setError("Failed to upload meme. Please try again.")
+      console.error("Error uploading meme:", error);
+      setError("Failed to upload meme. Please try again.");
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -199,8 +206,12 @@ export default function MemeUploadForm() {
           ) : (
             <div className="flex flex-col items-center justify-center py-4">
               <UploadCloud className="h-12 w-12 text-muted-foreground mb-2" />
-              <p className="text-lg font-medium mb-1">Drop your image here or click to browse</p>
-              <p className="text-sm text-muted-foreground mb-4">Supports JPG, PNG, GIF (Max 5MB)</p>
+              <p className="text-lg font-medium mb-1">
+                Drop your image here or click to browse
+              </p>
+              <p className="text-sm text-muted-foreground mb-4">
+                Supports JPG, PNG, GIF (Max 5MB)
+              </p>
               <Button
                 type="button"
                 variant="outline"
@@ -210,7 +221,13 @@ export default function MemeUploadForm() {
                 <ImageIcon className="h-4 w-4" />
                 Browse Files
               </Button>
-              <Input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              <Input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
             </div>
           )}
         </div>
@@ -263,7 +280,11 @@ export default function MemeUploadForm() {
         </AnimatePresence>
 
         <div className="flex justify-end">
-          <Button type="submit" disabled={!selectedFile || uploading || !title} className="flex items-center gap-2">
+          <Button
+            type="submit"
+            disabled={!selectedFile || uploading || !title}
+            className="flex items-center gap-2"
+          >
             {uploading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -279,6 +300,5 @@ export default function MemeUploadForm() {
         </div>
       </form>
     </div>
-  )
+  );
 }
-

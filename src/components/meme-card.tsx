@@ -1,46 +1,48 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Heart, MessageCircle, Share2 } from "lucide-react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import type { Meme } from "@/context/meme-context"
-import { useUser } from "@/context/user-context"
-import { useMeme } from "@/context/meme-context"
-import { formatRelativeTime, truncateText } from "@/lib/utils"
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Heart, MessageCircle, Share2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { useUser } from "@/context/user-context";
+import { useMeme } from "@/context/meme-context";
+import { formatRelativeTime, truncateText } from "@/lib/utils";
+import { IMeme } from "../../types/meme";
 
 interface MemeCardProps {
-  meme: Meme
-  priority?: boolean
+  meme: IMeme;
+  priority?: boolean;
 }
 
 export function MemeCard({ meme, priority = false }: MemeCardProps) {
-  const { likeMeme } = useMeme()
-  const { user, likeMeme: userLikeMeme, unlikeMeme, isMemeLiked } = useUser()
-  const [isLiked, setIsLiked] = useState(isMemeLiked(meme.id))
-  const [likeCount, setLikeCount] = useState(meme.likes)
-  const [isLikeAnimating, setIsLikeAnimating] = useState(false)
+  const { likeMeme } = useMeme();
+  const { user, likeMeme: userLikeMeme, unlikeMeme, isMemeLiked } = useUser();
+  const [isLiked, setIsLiked] = useState(isMemeLiked(meme.id));
+  const [likeCount, setLikeCount] = useState(meme.likes);
+  const [isLikeAnimating, setIsLikeAnimating] = useState(false);
 
   const handleLike = () => {
-    if (!user) return
+    if (!user) return;
 
     if (isLiked) {
-      setLikeCount((prev) => prev - 1)
-      unlikeMeme(meme.id)
+      setLikeCount((prev) => prev - 1);
+      unlikeMeme(meme.id);
     } else {
-      setLikeCount((prev) => prev + 1)
-      likeMeme(meme.id)
-      userLikeMeme(meme.id)
-      setIsLikeAnimating(true)
-      setTimeout(() => setIsLikeAnimating(false), 500)
+      setLikeCount((prev) => prev + 1);
+      likeMeme(meme.id);
+      userLikeMeme(meme.id);
+      setIsLikeAnimating(true);
+      setTimeout(() => setIsLikeAnimating(false), 500);
     }
 
-    setIsLiked(!isLiked)
-  }
+    setIsLiked(!isLiked);
+  };
 
-  const shareLink = `${typeof window !== "undefined" ? window.location.origin : ""}/meme/${meme.id}`
+  const shareLink = `${
+    typeof window !== "undefined" ? window.location.origin : ""
+  }/meme/${meme.id}`;
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -49,16 +51,16 @@ export function MemeCard({ meme, priority = false }: MemeCardProps) {
           title: meme.name,
           text: `Check out this meme: ${meme.name}`,
           url: shareLink,
-        })
+        });
       } catch (error) {
-        console.error("Error sharing:", error)
+        console.error("Error sharing:", error);
       }
     } else {
       // Fallback - copy to clipboard
-      navigator.clipboard.writeText(shareLink)
-      alert("Link copied to clipboard!")
+      navigator.clipboard.writeText(shareLink);
+      alert("Link copied to clipboard!");
     }
-  }
+  };
 
   return (
     <motion.div
@@ -80,12 +82,16 @@ export function MemeCard({ meme, priority = false }: MemeCardProps) {
           </div>
           <div>
             <p className="text-sm font-medium">{meme.creator || "Anonymous"}</p>
-            <p className="text-xs text-muted-foreground">{formatRelativeTime(meme.createdAt)}</p>
+            <p className="text-xs text-muted-foreground">
+              {formatRelativeTime(meme.createdAt)}
+            </p>
           </div>
         </div>
 
         <Link href={`/meme/${meme.id}`} className="block">
-          <h3 className="text-base font-semibold mb-2">{truncateText(meme.name, 60)}</h3>
+          <h3 className="text-base font-semibold mb-2">
+            {truncateText(meme.name, 60)}
+          </h3>
 
           <div className="relative aspect-square rounded-md overflow-hidden bg-muted">
             <Image
@@ -98,7 +104,11 @@ export function MemeCard({ meme, priority = false }: MemeCardProps) {
             />
           </div>
 
-          {meme.caption && <p className="mt-2 text-sm text-muted-foreground">{truncateText(meme.caption, 100)}</p>}
+          {meme.caption && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              {truncateText(meme.caption, 100)}
+            </p>
+          )}
         </Link>
 
         <div className="flex items-center justify-between mt-4">
@@ -106,7 +116,9 @@ export function MemeCard({ meme, priority = false }: MemeCardProps) {
             <Button
               variant="ghost"
               size="sm"
-              className={`flex items-center gap-1 ${isLikeAnimating ? "like-button-animation" : ""} ${isLiked ? "text-red-500" : ""}`}
+              className={`flex items-center gap-1 ${
+                isLikeAnimating ? "like-button-animation" : ""
+              } ${isLiked ? "text-red-500" : ""}`}
               onClick={handleLike}
             >
               <Heart className={`h-4 w-4 ${isLiked ? "fill-red-500" : ""}`} />
@@ -114,7 +126,11 @@ export function MemeCard({ meme, priority = false }: MemeCardProps) {
             </Button>
 
             <Link href={`/meme/${meme.id}`}>
-              <Button variant="ghost" size="sm" className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-1"
+              >
                 <MessageCircle className="h-4 w-4" />
                 <span>{meme.comments.length}</span>
               </Button>
@@ -127,6 +143,5 @@ export function MemeCard({ meme, priority = false }: MemeCardProps) {
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
-

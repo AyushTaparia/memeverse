@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import Link from "next/link"
+import Link from "next/link";
 
-import { useState } from "react"
-import Image from "next/image"
-import { useUser } from "@/context/user-context"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react";
+import Image from "next/image";
+import { useUser } from "@/context/user-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const UserProfile = () => {
-  const { user, updateProfile } = useUser()
-  const [editing, setEditing] = useState(false)
-  const [username, setUsername] = useState(user?.username || "")
-  const [bio, setBio] = useState(user?.bio || "")
-  const [avatar, setAvatar] = useState(user?.avatar || "")
-  const [error, setError] = useState("")
+  const { user, updateProfile } = useUser();
+  const [editing, setEditing] = useState(false);
+  const [username, setUsername] = useState(user?.username || "");
+  const [bio, setBio] = useState(user?.bio || "");
+  const [avatar, setAvatar] = useState(user?.avatar || "");
+  const [error, setError] = useState("");
 
   const handleSave = () => {
     if (!username.trim()) {
-      setError("Username cannot be empty")
-      return
+      setError("Username cannot be empty");
+      return;
     }
-    updateProfile({ username, bio, avatar })
-    setEditing(false)
-  }
+    updateProfile({ username, bio, avatar });
+    setEditing(false);
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -92,8 +92,7 @@ const UserProfile = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default UserProfile
-
+export default UserProfile;

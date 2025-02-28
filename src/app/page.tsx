@@ -1,8 +1,8 @@
-import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, TrendingUp, Upload, Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import HomeFeaturesMemes from "@/components/home-features-memes"
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, TrendingUp, Upload, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import HomeFeaturesMemes from "@/components/home-features-memes";
 
 export default function HomePage() {
   return (
@@ -17,8 +17,8 @@ export default function HomePage() {
                   Welcome to MemeVerse: Your Ultimate Meme Hub
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Explore, share, and interact with the best memes on the internet. Join our community and unleash your
-                  creativity!
+                  Explore, share, and interact with the best memes on the
+                  internet. Join our community and unleash your creativity!
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -28,7 +28,10 @@ export default function HomePage() {
                   </Button>
                 </Link>
                 <Link href="/upload">
-                  <Button variant="outline" className="inline-flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    className="inline-flex items-center gap-2"
+                  >
                     Upload Your Own <Upload className="h-4 w-4" />
                   </Button>
                 </Link>
@@ -61,7 +64,8 @@ export default function HomePage() {
                 Everything You Need for Your Meme Journey
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                MemeVerse offers a comprehensive platform for meme enthusiasts to discover, create, and share memes.
+                MemeVerse offers a comprehensive platform for meme enthusiasts
+                to discover, create, and share memes.
               </p>
             </div>
           </div>
@@ -73,7 +77,8 @@ export default function HomePage() {
               <div className="space-y-2">
                 <h3 className="text-xl font-bold">Trending Memes</h3>
                 <p className="text-muted-foreground">
-                  Stay updated with the latest viral memes that are breaking the internet.
+                  Stay updated with the latest viral memes that are breaking the
+                  internet.
                 </p>
               </div>
             </div>
@@ -84,7 +89,8 @@ export default function HomePage() {
               <div className="space-y-2">
                 <h3 className="text-xl font-bold">Upload & Create</h3>
                 <p className="text-muted-foreground">
-                  Upload your memes or create new ones with our easy-to-use meme generator.
+                  Upload your memes or create new ones with our easy-to-use meme
+                  generator.
                 </p>
               </div>
             </div>
@@ -95,7 +101,8 @@ export default function HomePage() {
               <div className="space-y-2">
                 <h3 className="text-xl font-bold">Community</h3>
                 <p className="text-muted-foreground">
-                  Join a community of meme enthusiasts, share laughs, and make friends.
+                  Join a community of meme enthusiasts, share laughs, and make
+                  friends.
                 </p>
               </div>
             </div>
@@ -108,9 +115,11 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Trending Memes</h2>
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                Trending Memes
+              </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Check out what&apos;s making everyone laugh right now.
+                Check out what's making everyone laugh right now.
               </p>
             </div>
           </div>
@@ -118,7 +127,10 @@ export default function HomePage() {
             <HomeFeaturesMemes />
             <div className="mt-8 flex justify-center">
               <Link href="/explore">
-                <Button variant="outline" className="inline-flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  className="inline-flex items-center gap-2"
+                >
                   View All Memes <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
@@ -132,14 +144,20 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Ready to Join the MemeVerse?</h2>
+              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                Ready to Join the MemeVerse?
+              </h2>
               <p className="max-w-[600px] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Start exploring, creating, and sharing memes with our growing community today.
+                Start exploring, creating, and sharing memes with our growing
+                community today.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <Link href="/explore">
-                <Button variant="secondary" className="inline-flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  className="inline-flex items-center gap-2"
+                >
                   Start Exploring
                 </Button>
               </Link>
@@ -156,6 +174,5 @@ export default function HomePage() {
         </div>
       </section>
     </>
-  )
+  );
 }
-

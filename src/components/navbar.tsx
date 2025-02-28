@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
-import { Menu, X, Sun, Moon, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useTheme } from "next-themes"
-import { Input } from "@/components/ui/input"
-import { motion, AnimatePresence } from "framer-motion"
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { Menu, X, Sun, Moon, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useTheme } from "next-themes";
+import { Input } from "@/components/ui/input";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [showSearch, setShowSearch] = useState(false)
-  const { theme, setTheme } = useTheme()
-  const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
 
   // Close mobile menu when route changes
   useEffect(() => {
-    setIsOpen(false)
-    setShowSearch(false)
-  }, [])
+    setIsOpen(false);
+    setShowSearch(false);
+  }, []);
 
-  const toggleMenu = () => setIsOpen(!isOpen)
-  const toggleSearch = () => setShowSearch(!showSearch)
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleSearch = () => setShowSearch(!showSearch);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -33,21 +33,23 @@ const Navbar = () => {
     { name: "Upload", href: "/upload" },
     { name: "Leaderboard", href: "/leaderboard" },
     { name: "Profile", href: "/profile" },
-  ]
+  ];
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (searchTerm.trim()) {
-      window.location.href = `/explore?search=${encodeURIComponent(searchTerm)}`
+      window.location.href = `/explore?search=${encodeURIComponent(
+        searchTerm
+      )}`;
     }
-  }
+  };
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
-  }
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-10">
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center">
         <div className="mr-4 flex">
           <Link href="/" className="flex items-center space-x-2">
@@ -90,15 +92,35 @@ const Navbar = () => {
                 </motion.form>
               )}
             </AnimatePresence>
-            <Button variant="ghost" size="icon" onClick={toggleSearch} aria-label="Search">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleSearch}
+              aria-label="Search"
+            >
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
             </Button>
           </div>
 
-          <Button variant="ghost" size="icon" aria-label="Toggle menu" className="md:hidden" onClick={toggleMenu}>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle menu"
+            className="md:hidden"
+            onClick={toggleMenu}
+          >
             {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
@@ -129,7 +151,9 @@ const Navbar = () => {
                     key={link.href}
                     href={link.href}
                     className={`text-sm font-medium transition-colors hover:text-primary ${
-                      pathname === link.href ? "text-primary" : "text-foreground/60"
+                      pathname === link.href
+                        ? "text-primary"
+                        : "text-foreground/60"
                     }`}
                   >
                     {link.name}
@@ -139,7 +163,11 @@ const Navbar = () => {
               <div className="flex items-center justify-between pt-4 border-t">
                 <span className="text-sm font-medium">Theme</span>
                 <Button variant="ghost" size="icon" onClick={toggleTheme}>
-                  {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  {theme === "dark" ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -147,8 +175,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;

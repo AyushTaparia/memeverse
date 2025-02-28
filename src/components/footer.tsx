@@ -1,5 +1,5 @@
-import Link from "next/link"
-import { Github, Twitter, Instagram } from "lucide-react"
+import Link from "next/link";
+import { Github, Twitter, Instagram } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -12,16 +12,28 @@ const Footer = () => {
         </div>
         <div className="flex items-center space-x-4">
           <nav className="flex items-center space-x-4 text-sm">
-            <Link href="/about" className="text-muted-foreground hover:text-foreground">
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-foreground"
+            >
               About
             </Link>
-            <Link href="/privacy" className="text-muted-foreground hover:text-foreground">
+            <Link
+              href="/privacy"
+              className="text-muted-foreground hover:text-foreground"
+            >
               Privacy
             </Link>
-            <Link href="/terms" className="text-muted-foreground hover:text-foreground">
+            <Link
+              href="/terms"
+              className="text-muted-foreground hover:text-foreground"
+            >
               Terms
             </Link>
-            <Link href="/contact" className="text-muted-foreground hover:text-foreground">
+            <Link
+              href="/contact"
+              className="text-muted-foreground hover:text-foreground"
+            >
               Contact
             </Link>
           </nav>
@@ -57,8 +69,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
-
+export default Footer;

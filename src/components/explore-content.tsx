@@ -1,54 +1,59 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useCallback, useRef } from "react";
+
+import { useEffect } from "react";
+
+import { useState, useCallback } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { MemeGrid } from "@/components/meme-grid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Meme, useMeme } from "@/context/meme-context";
-import { searchMemes } from "@/lib/api";
+import { searchMemes, fetchMemesByCategory } from "@/lib/api";
 import { debounce } from "@/lib/utils";
+import { MemeCategory } from "../../types/meme";
 
 interface ExploreContentProps {
   initialSearch?: string;
-  initialCategory?: string;
+  initialCategory?: MemeCategory;
 }
 
 export default function ExploreContent({
   initialSearch = "",
   initialCategory = "trending",
 }: ExploreContentProps) {
-  const { memes, loading, fetchMemes } = useMeme();
   const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [category, setCategory] = useState(initialCategory);
-  const [searchResults, setSearchResults] = useState<Meme[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [category, setCategory] = useState<MemeCategory>(initialCategory);
   const [page, setPage] = useState(1);
   const itemsPerPage = 12;
-
-  const isInitialMount = useRef(true);
-  const currentCategory = useRef(initialCategory);
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Category options
-  const categories = [
+  // Categories with proper typing
+  const categories: Array<{ label: string; value: MemeCategory }> = [
     { label: "Trending", value: "trending" },
     { label: "New", value: "new" },
     { label: "Classic", value: "classic" },
     { label: "Random", value: "random" },
   ];
 
+  // Use React Query for caching and managing API calls
+  const {
+    data: memes = [],
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["memes", category, searchTerm],
+    queryFn: () =>
+      searchTerm ? searchMemes(searchTerm) : fetchMemesByCategory(category),
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+  });
+
   // Update URL when search or category changes
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
     const params = new URLSearchParams(searchParams);
 
     if (searchTerm) {
@@ -66,35 +71,11 @@ export default function ExploreContent({
     router.replace(`${pathname}?${params.toString()}`);
   }, [searchTerm, category, pathname, router, searchParams]);
 
-  // Fetch memes by category when category changes, but not on initial render
-  useEffect(() => {
-    if (isInitialMount.current) {
-      return;
-    }
-
-    if (!searchTerm && category !== currentCategory.current) {
-      fetchMemes(category);
-      setPage(1);
-      currentCategory.current = category;
-    }
-  }, [category, fetchMemes, searchTerm]);
-
   // Debounced search function
   const debouncedSearch = useCallback(
-    debounce(async (query: string) => {
-      if (query) {
-        setIsSearching(true);
-        try {
-          const results = await searchMemes(query);
-          setSearchResults(results);
-        } catch (error) {
-          console.error("Search error:", error);
-        } finally {
-          setIsSearching(false);
-        }
-      } else {
-        setSearchResults([]);
-      }
+    debounce((query: string) => {
+      setSearchTerm(query);
+      setPage(1);
     }, 500),
     []
   );
@@ -102,20 +83,14 @@ export default function ExploreContent({
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
-    setSearchTerm(query);
     debouncedSearch(query);
-    setPage(1);
   };
 
   // Handle category change
-  const handleCategoryChange = (newCategory: string) => {
-    if (newCategory === category) return;
+  const handleCategoryChange = (newCategory: MemeCategory) => {
     setCategory(newCategory);
-
-    if (searchTerm) {
-      setSearchTerm("");
-      setSearchResults([]);
-    }
+    setSearchTerm("");
+    setPage(1);
   };
 
   // Handle load more
@@ -124,9 +99,18 @@ export default function ExploreContent({
   };
 
   // Calculate pagination
-  const displayMemes = searchTerm ? searchResults : memes;
-  const paginatedMemes = displayMemes.slice(0, page * itemsPerPage);
-  const hasMore = paginatedMemes.length < displayMemes.length;
+  const paginatedMemes = memes.slice(0, page * itemsPerPage);
+  const hasMore = paginatedMemes.length < memes.length;
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-destructive">
+          Error loading memes. Please try again later.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -148,7 +132,7 @@ export default function ExploreContent({
           <Input
             type="search"
             placeholder="Search memes..."
-            value={searchTerm}
+            defaultValue={searchTerm}
             onChange={handleSearchChange}
             className="md:w-[300px]"
           />
@@ -157,7 +141,7 @@ export default function ExploreContent({
 
       <MemeGrid
         memes={paginatedMemes}
-        loading={loading || isSearching}
+        loading={loading}
         hasMore={hasMore}
         onLoadMore={handleLoadMore}
       />

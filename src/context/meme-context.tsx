@@ -1,54 +1,40 @@
 "use client";
 
 import type React from "react";
-import { createContext, useContext, useState, useEffect, useRef } from "react";
+
+import { createContext, useContext, useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchTrendingMemes, fetchMemesByCategory } from "@/lib/api";
+import { IComment, IMeme } from "../../types/meme";
 
-export type Meme = {
-  id: string;
-  name: string;
-  url: string;
-  width: number;
-  height: number;
-  box_count?: number;
-  caption?: string;
-  likes: number;
-  comments: Comment[];
-  category: string;
-  createdAt: string;
-  creator?: string;
-};
-
-export type Comment = {
-  id: string;
-  text: string;
-  username: string;
-  createdAt: string;
-};
-
-type MemeContextType = {
-  memes: Meme[];
-  trendingMemes: Meme[];
+interface MemeContextType {
+  memes: IMeme[];
+  trendingMemes: IMeme[];
   loading: boolean;
   error: string | null;
   fetchMemes: (category?: string) => Promise<void>;
-  addMeme: (meme: Meme) => void;
+  addMeme: (meme: IMeme) => void;
   likeMeme: (id: string) => void;
   addComment: (
     memeId: string,
-    comment: Omit<Comment, "id" | "createdAt">
+    comment: Omit<IComment, "id" | "createdAt">
   ) => void;
-  getMemeById: (id: string) => Meme | undefined;
-};
+  getMemeById: (id: string) => IMeme | undefined;
+}
 
 const MemeContext = createContext<MemeContextType | undefined>(undefined);
 
 export const MemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [memes, setMemes] = useState<Meme[]>([]);
-  const [trendingMemes, setTrendingMemes] = useState<Meme[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [memes, setMemes] = useState<IMeme[]>([]);
+  const [trendingMemes, setTrendingMemes] = useState<IMeme[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const initialFetchCompleted = useRef(false);
+
+  // Use React Query for caching and managing API calls
+  const { data: trendingData, isLoading: trendingLoading } = useQuery({
+    queryKey: ["trending-memes"],
+    queryFn: fetchTrendingMemes,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+  });
 
   // Initialize with local storage on client side
   useEffect(() => {
@@ -62,18 +48,15 @@ export const MemeProvider = ({ children }: { children: React.ReactNode }) => {
     if (storedTrendingMemes) {
       setTrendingMemes(JSON.parse(storedTrendingMemes));
     }
-
-    // Only fetch initially if we don't have stored data
-    if (
-      (!storedMemes || !storedTrendingMemes) &&
-      !initialFetchCompleted.current
-    ) {
-      fetchInitialMemes();
-      initialFetchCompleted.current = true;
-    } else {
-      setLoading(false);
-    }
   }, []);
+
+  // Update trending memes when data changes
+  useEffect(() => {
+    if (trendingData) {
+      setTrendingMemes(trendingData);
+      setMemes(trendingData);
+    }
+  }, [trendingData]);
 
   // Sync to localStorage whenever state changes
   useEffect(() => {
@@ -86,34 +69,17 @@ export const MemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [memes, trendingMemes]);
 
-  const fetchInitialMemes = async () => {
-    try {
-      setLoading(true);
-      const trending = await fetchTrendingMemes();
-      setTrendingMemes(trending);
-      setMemes(trending);
-      setLoading(false);
-    } catch (err) {
-      setError("Failed to fetch memes");
-      setLoading(false);
-      console.error(err);
-    }
-  };
-
   const fetchMemes = async (category = "trending") => {
     try {
-      setLoading(true);
       const fetchedMemes = await fetchMemesByCategory(category);
       setMemes(fetchedMemes);
-      setLoading(false);
     } catch (err) {
       setError("Failed to fetch memes");
-      setLoading(false);
       console.error(err);
     }
   };
 
-  const addMeme = (meme: Meme) => {
+  const addMeme = (meme: IMeme) => {
     setMemes((prev) => [meme, ...prev]);
   };
 
@@ -133,9 +99,9 @@ export const MemeProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addComment = (
     memeId: string,
-    comment: Omit<Comment, "id" | "createdAt">
+    comment: Omit<IComment, "id" | "createdAt">
   ) => {
-    const newComment: Comment = {
+    const newComment: IComment = {
       ...comment,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
@@ -165,7 +131,7 @@ export const MemeProvider = ({ children }: { children: React.ReactNode }) => {
   const value = {
     memes,
     trendingMemes,
-    loading,
+    loading: trendingLoading,
     error,
     fetchMemes,
     addMeme,
