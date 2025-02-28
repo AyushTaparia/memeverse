@@ -19,7 +19,7 @@ interface ExploreContentProps {
 
 export default function ExploreContent({
   initialSearch = "",
-  initialCategory = "trending",
+  initialCategory = "all",
 }: ExploreContentProps) {
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [category, setCategory] = useState<MemeCategory>(initialCategory);
@@ -32,6 +32,7 @@ export default function ExploreContent({
 
   // Categories with proper typing
   const categories: Array<{ label: string; value: MemeCategory }> = [
+    { label: "All", value: "all" },
     { label: "Trending", value: "trending" },
     { label: "New", value: "new" },
     { label: "Classic", value: "classic" },
@@ -60,7 +61,7 @@ export default function ExploreContent({
       params.delete("search");
     }
 
-    if (category && category !== "trending") {
+    if (category && category !== "all") {
       params.set("category", category);
     } else {
       params.delete("category");
@@ -99,8 +100,9 @@ export default function ExploreContent({
   }, []);
 
   // Calculate pagination
-  const paginatedMemes = memes.slice(0, page * itemsPerPage);
-  const hasMore = paginatedMemes.length < memes.length;
+  const paginatedMemes =
+    category === "all" ? memes : memes.slice(0, page * itemsPerPage);
+  const hasMore = category !== "all" && paginatedMemes.length < memes.length;
 
   if (error) {
     return (

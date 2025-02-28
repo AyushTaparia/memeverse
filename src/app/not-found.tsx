@@ -8,7 +8,7 @@ export default function NotFound() {
     <div className="container flex flex-col items-center justify-center min-h-[70vh] py-12 text-center">
       <div className="mb-8 relative w-full max-w-md h-64">
         <Image
-          src="/placeholder.svg?height=256&width=512"
+          src="/images/404_bg.jpg"
           alt="404 Meme"
           fill
           className="object-contain"

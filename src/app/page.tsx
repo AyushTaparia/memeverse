@@ -40,7 +40,7 @@ export default function HomePage() {
             <div className="mx-auto w-full max-w-[500px] rotate-2">
               <div className="grid grid-cols-1 gap-2 md:grid-cols-1 lg:gap-6">
                 <Image
-                  src="/placeholder.svg?height=400&width=800"
+                  src="/images/meme_bg.jpg"
                   alt="Featured Meme"
                   width={800}
                   height={400}

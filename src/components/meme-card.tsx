@@ -73,7 +73,8 @@ export function MemeCard({ meme, priority = false }: MemeCardProps) {
         <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-full overflow-hidden bg-muted">
             <Image
-              src="/placeholder.svg?height=32&width=32"
+              src={meme.url}
+              quality={1}
               alt="User avatar"
               width={32}
               height={32}

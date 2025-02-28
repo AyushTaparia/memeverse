@@ -19,7 +19,7 @@ export default function ExplorePage({
   const category =
     typeof searchParams.category === "string"
       ? searchParams.category
-      : "trending";
+      : "all";
 
   return (
     <div className="container py-8">
